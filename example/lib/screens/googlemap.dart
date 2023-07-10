@@ -49,14 +49,14 @@ List<GeoPolygon> polygons = [
   GeoPolygon(
     name: 'Poligono 1',
     points: [
-      LatLng(-12.102815, -77.051334),
-      LatLng(-12.099048, -77.050785),
-      LatLng(-12.098823, -77.049573),
-      LatLng(-12.098586, -77.049369),
-      LatLng(-12.100707, -77.038192),
-      LatLng(-12.103464, -77.038779),
-      LatLng(-12.101880, -77.046154),
-      LatLng(-12.102762, -77.046466),
+      const LatLng(-12.102815, -77.051334),
+      const LatLng(-12.099048, -77.050785),
+      const LatLng(-12.098823, -77.049573),
+      const LatLng(-12.098586, -77.049369),
+      const LatLng(-12.100707, -77.038192),
+      const LatLng(-12.103464, -77.038779),
+      const LatLng(-12.101880, -77.046154),
+      const LatLng(-12.102762, -77.046466),
     ],
     color: Colors.yellow,
     borderColor: Colors.black,
@@ -67,9 +67,9 @@ List<GeoPolygon> polygons = [
 List<GeoMarker> markers = [
   GeoMarker(
     name: 'Marcador',
-    point: LatLng(-12.090685, -77.055293),
+    point: const LatLng(-12.090685, -77.055293),
     builder: (context) {
-      return Icon(
+      return const Icon(
         Icons.location_on,
         color: Colors.red,
         size: 36,
@@ -78,25 +78,25 @@ List<GeoMarker> markers = [
   ),
   GeoMarker(
     name: 'Usuario',
-    point: LatLng(-12.094002, -77.064622),
+    point: const LatLng(-12.094002, -77.064622),
     width: 36,
     height: 36,
     builder: (context) {
       return InkWell(
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Usuario'),
             ),
           );
         },
         child: Container(
-          padding: EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.all(5.0),
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.blue,
           ),
-          child: Icon(
+          child: const Icon(
             Icons.person,
             color: Colors.white,
             size: 24,
@@ -111,10 +111,10 @@ List<GeoPolyLine> polyLines = [
   GeoPolyLine(
     name: 'Polilinea',
     points: [
-      LatLng(-12.077711, -77.086946),
-      LatLng(-12.073263, -77.099563),
-      LatLng(-12.062603, -77.095443),
-      LatLng(-12.055217, -77.056562),
+      const LatLng(-12.077711, -77.086946),
+      const LatLng(-12.073263, -77.099563),
+      const LatLng(-12.062603, -77.095443),
+      const LatLng(-12.055217, -77.056562),
     ],
     color: Colors.green,
     width: 5,
@@ -122,9 +122,9 @@ List<GeoPolyLine> polyLines = [
   GeoPolyLine(
     name: 'Polilinea 2',
     points: [
-      LatLng(-12.067807, -77.032444),
-      LatLng(-12.092147, -77.022573),
-      LatLng(-12.092063, -77.033731),
+      const LatLng(-12.067807, -77.032444),
+      const LatLng(-12.092147, -77.022573),
+      const LatLng(-12.092063, -77.033731),
     ],
     color: Colors.redAccent,
     width: 3,

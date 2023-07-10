@@ -1,4 +1,5 @@
 import 'package:easy_software/easy_software.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class LoginPageExample extends StatelessWidget {
@@ -11,8 +12,12 @@ class LoginPageExample extends StatelessWidget {
       backgroundButtonColor: Colors.deepPurple,
       contentFlex: 1,
       onLogin: (username, password) {
-        print('Username: $username');
-        print('Password: $password');
+        if (kDebugMode) {
+          print('Username: $username');
+        }
+        if (kDebugMode) {
+          print('Password: $password');
+        }
       },
     );
   }

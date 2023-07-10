@@ -1,5 +1,4 @@
 import 'package:easy_software/tables/headers.dart';
-import 'package:easy_software/tables/paginated_table.dart';
 import 'package:easy_software/tables/tables.dart';
 import 'package:example/data/user_data.dart';
 import 'package:example/models/user.dart';
@@ -39,7 +38,7 @@ class _TablesExamplesState extends State<TablesExamples> {
                 onDetails: (model) {},
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Expanded(

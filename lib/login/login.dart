@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
             flex: 4,
             child: Row(
               children: [
-                Spacer(),
+                const Spacer(),
                 Expanded(
                   flex: widget.contentFlex,
                   child: Form(
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                             }
                             return null;
                           },
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: CupertinoColors.extraLightBackgroundGray,
                           ),
                           controller: _usernameController,
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                             }
                             return null;
                           },
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: CupertinoColors.extraLightBackgroundGray,
                           ),
                           controller: _passwordController,
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
               ],
             ),
           ),

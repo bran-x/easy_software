@@ -28,7 +28,7 @@ class ChartIndicator extends StatelessWidget {
             width: 8,
             color: color,
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           SizedBox(
@@ -43,7 +43,7 @@ class ChartIndicator extends StatelessWidget {
                   child: Text(
                     label.toString(),
                     textAlign: TextAlign.left,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       color: CupertinoColors.systemGrey,
                     ),
@@ -54,7 +54,7 @@ class ChartIndicator extends StatelessWidget {
                   child: Text(
                     value.toString(),
                     textAlign: TextAlign.left,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       color: CupertinoColors.black,
                     ),

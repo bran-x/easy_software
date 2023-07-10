@@ -1,6 +1,5 @@
 import 'package:easy_software/tables/headers.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 
 import 'config.dart';
 
@@ -163,7 +162,7 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                           },
                         ),
                         if (widget.showButtons)
-                          Container(
+                          SizedBox(
                             width: 150,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -224,16 +223,16 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
               children: [
                 CupertinoButton(
                   onPressed: onTapFirstPageButton,
-                  child: const Icon(CupertinoIcons.backward_end),
                   padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.backward_end),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 CupertinoButton(
                   onPressed: onTapBackButton,
-                  child: const Icon(CupertinoIcons.back),
                   padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.back),
                 ),
                 const SizedBox(
                   width: 10,
@@ -268,16 +267,16 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                 ),
                 CupertinoButton(
                   onPressed: onTapForwardButton,
-                  child: const Icon(CupertinoIcons.forward),
                   padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.forward),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 CupertinoButton(
                   onPressed: onTapEndButton,
-                  child: const Icon(CupertinoIcons.forward_end),
                   padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.forward_end),
                 ),
               ],
             ),

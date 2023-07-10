@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:easy_software/charts/indicators.dart';
 import 'package:easy_software/charts/models.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class DonutChartPainter extends CustomPainter {
   final List<DonutChartElement> data;
@@ -106,7 +104,7 @@ class DonutChartPainter extends CustomPainter {
 
       TextSpan span = TextSpan(
         text: data[i].value.toString(),
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
           fontWeight: FontWeight.bold,
@@ -178,7 +176,7 @@ class _DonutChartState extends State<DonutChart> {
                   ),
                 ),
                 if (widget.showIndicators && !widget.vertical)
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                 if (widget.showIndicators && !widget.vertical)
@@ -213,7 +211,7 @@ class _DonutChartState extends State<DonutChart> {
             ),
           ),
           if (widget.showIndicators && widget.vertical)
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
           if (widget.showIndicators && widget.vertical)
