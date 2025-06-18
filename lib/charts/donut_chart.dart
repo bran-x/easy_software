@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:easy_software/charts/indicators.dart';
 import 'package:easy_software/charts/models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DonutChartPainter extends CustomPainter {
@@ -10,12 +11,16 @@ class DonutChartPainter extends CustomPainter {
     required this.data,
     this.strokePercent = 0.2,
     this.gap = 0.08,
-    this.borderRadius = 16.0,
+    this.borderRadius = 0.2,
+    this.isInteger = true,
   });
 
   final double strokePercent;
   final double gap;
   final double borderRadius;
+  final bool isInteger;
+
+  final double minSweep = 12 * pi / 180;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -34,79 +39,95 @@ class DonutChartPainter extends CustomPainter {
     if (data.length > 1) {
       totalAngle -= gap * data.length;
     }
-
     for (int i = 0; i < data.length; i++) {
       sweepAngle = (data[i].value / total) * totalAngle;
-
-      Path path = Path();
-      path.moveTo(centerX + outerRadius * cos(startAngle + gap),
-          centerY + outerRadius * sin(startAngle + gap));
-
-      path.arcTo(
-        Rect.fromCircle(center: Offset(centerX, centerY), radius: outerRadius),
-        startAngle + gap,
-        sweepAngle - 2 * gap,
-        false,
-      );
-
-      path.arcToPoint(
-        Offset(
-            centerX +
-                (outerRadius - borderRadius) * cos(startAngle + sweepAngle),
-            centerY +
-                (outerRadius - borderRadius) * sin(startAngle + sweepAngle)),
-        radius: Radius.circular(borderRadius),
-      );
-
-      path.lineTo(
-          centerX + (innerRadius + borderRadius) * cos(startAngle + sweepAngle),
-          centerY +
-              (innerRadius + borderRadius) * sin(startAngle + sweepAngle));
-
-      path.arcToPoint(
-        Offset(centerX + innerRadius * cos(startAngle + sweepAngle - gap),
-            centerY + innerRadius * sin(startAngle + sweepAngle - gap)),
-        radius: Radius.circular(borderRadius),
-      );
-
-      path.arcTo(
-        Rect.fromCircle(center: Offset(centerX, centerY), radius: innerRadius),
-        startAngle + sweepAngle - gap,
-        -sweepAngle + 2 * gap,
-        false,
-      );
-
-      path.arcToPoint(
-        Offset(centerX + (innerRadius + borderRadius) * cos(startAngle),
-            centerY + (innerRadius + borderRadius) * sin(startAngle)),
-        radius: Radius.circular(borderRadius),
-      );
-
-      path.lineTo(centerX + (outerRadius - borderRadius) * cos(startAngle),
-          centerY + (outerRadius - borderRadius) * sin(startAngle));
-
-      path.arcToPoint(
-        Offset(centerX + outerRadius * cos(startAngle + gap),
-            centerY + outerRadius * sin(startAngle + gap)),
-        radius: Radius.circular(borderRadius),
-      );
-
-      path.close();
+      if (total == 0) {
+        sweepAngle = 2 * pi;
+      }
+      double R = (outerRadius - innerRadius) * borderRadius;
+      final initialAngle = startAngle;
+      final finalAngle = startAngle + sweepAngle;
+      double radius2 = sqrt(outerRadius * (outerRadius - 2 * R));
+      double dtheta2 = asin(R / (outerRadius - R));
+      double radius1 = sqrt(innerRadius * (innerRadius + 2 * R));
+      double dtheta1 = asin(R / (innerRadius + R));
+      while (2 * dtheta1 > sweepAngle ||
+          2 * dtheta2 > sweepAngle ||
+          radius2 < radius1) {
+        R = R / 2;
+        radius2 = sqrt(outerRadius * (outerRadius - 2 * R));
+        dtheta2 = asin(R / (outerRadius - R));
+        radius1 = sqrt(innerRadius * (innerRadius + 2 * R));
+        dtheta1 = asin(R / (innerRadius + R));
+      }
+      final Path path = Path()
+        ..moveTo(centerX + radius1 * cos(initialAngle),
+            centerY + radius1 * sin(initialAngle))
+        ..lineTo(centerX + radius2 * cos(initialAngle),
+            centerY + radius2 * sin(initialAngle))
+        ..arcToPoint(
+          Offset(centerX + outerRadius * cos(initialAngle + dtheta2),
+              centerY + outerRadius * sin(initialAngle + dtheta2)),
+          radius: Radius.circular(R),
+          clockwise: true,
+        )
+        ..arcToPoint(
+          Offset(centerX + outerRadius * cos(finalAngle - dtheta2),
+              centerY + outerRadius * sin(finalAngle - dtheta2)),
+          radius: Radius.circular(outerRadius),
+          clockwise: true,
+          largeArc: sweepAngle > pi,
+        )
+        ..arcToPoint(
+          Offset(centerX + radius2 * cos(finalAngle),
+              centerY + radius2 * sin(finalAngle)),
+          radius: Radius.circular(R),
+          clockwise: true,
+        )
+        ..lineTo(centerX + radius1 * cos(finalAngle),
+            centerY + radius1 * sin(finalAngle))
+        ..arcToPoint(
+          Offset(centerX + innerRadius * cos(finalAngle - dtheta1),
+              centerY + innerRadius * sin(finalAngle - dtheta1)),
+          radius: Radius.circular(R),
+          clockwise: true,
+        )
+        ..arcToPoint(
+          Offset(centerX + innerRadius * cos(initialAngle + dtheta1),
+              centerY + innerRadius * sin(initialAngle + dtheta1)),
+          radius: Radius.circular(innerRadius),
+          clockwise: false,
+          largeArc: sweepAngle > pi,
+        )
+        ..arcToPoint(
+          Offset(centerX + radius1 * cos(initialAngle),
+              centerY + radius1 * sin(initialAngle)),
+          radius: Radius.circular(R),
+          clockwise: true,
+        )
+        ..lineTo(centerX + radius2 * cos(initialAngle),
+            centerY + radius2 * sin(initialAngle))
+        ..close();
 
       canvas.drawPath(
         path,
-        Paint()..color = data[i].color,
+        Paint()..color = total > 0 ? data[i].color : Colors.grey.shade400,
       );
+      if (total == 0) {
+        return;
+      }
 
       // Draw the text
       double textAngle = startAngle + sweepAngle / 2;
       double textRadius = (innerRadius + outerRadius) / 2;
 
+      double fontSize = clampDouble(minSize / 12, 4, 16);
+
       TextSpan span = TextSpan(
-        text: data[i].value.toString(),
-        style: const TextStyle(
+        text: data[i].value.toStringAsFixed(isInteger ? 0 : 1),
+        style: TextStyle(
           color: Colors.white,
-          fontSize: 16,
+          fontSize: fontSize,
           fontWeight: FontWeight.bold,
         ),
       );
@@ -122,7 +143,9 @@ class DonutChartPainter extends CustomPainter {
       double textX = centerX + textRadius * cos(textAngle) - tp.width / 2;
       double textY = centerY + textRadius * sin(textAngle) - tp.height / 2;
 
-      tp.paint(canvas, Offset(textX, textY));
+      if (sweepAngle > minSweep) {
+        tp.paint(canvas, Offset(textX, textY));
+      }
 
       // Update the angle
       startAngle += sweepAngle;
@@ -145,11 +168,20 @@ class DonutChart extends StatefulWidget {
     required this.data,
     this.showIndicators = true,
     this.vertical = true,
+    this.strokePercent = 0.1,
+    this.gap = 0.05,
+    this.borderRadius = 0.2,
+    this.isInteger = true,
   });
 
   final List<DonutChartElement> data;
   final bool showIndicators;
   final bool vertical;
+
+  final double strokePercent;
+  final double gap;
+  final double borderRadius;
+  final bool isInteger;
 
   @override
   State<DonutChart> createState() => _DonutChartState();
@@ -171,7 +203,12 @@ class _DonutChartState extends State<DonutChart> {
                     width: double.infinity,
                     height: double.infinity,
                     child: CustomPaint(
-                      painter: DonutChartPainter(data: widget.data),
+                      painter: DonutChartPainter(
+                        data: widget.data,
+                        gap: widget.gap,
+                        borderRadius: widget.borderRadius,
+                        isInteger: widget.isInteger,
+                      ),
                     ),
                   ),
                 ),
@@ -199,6 +236,7 @@ class _DonutChartState extends State<DonutChart> {
                                     color: widget.data[i].color,
                                     value: widget.data[i].value,
                                     label: widget.data[i].name,
+                                    isInteger: widget.isInteger,
                                   ),
                                 ),
                             ],

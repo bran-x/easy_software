@@ -22,6 +22,11 @@ class PaginatedTable<T> extends StatefulWidget {
     this.headerBackgroundColor,
     this.headerTextStyle,
     this.rowTextStyle,
+    this.customButtons = const [],
+    this.customButtonActions = const [],
+    this.buttonsWidth = 150,
+    this.minSizeButtons,
+    this.headerTextAlign,
   });
 
   final List<T> data;
@@ -40,6 +45,11 @@ class PaginatedTable<T> extends StatefulWidget {
   final Color? headerBackgroundColor;
   final TextStyle? headerTextStyle;
   final TextStyle? rowTextStyle;
+  final TextAlign? headerTextAlign;
+  final List<Widget> customButtons;
+  final List<void Function(T model)> customButtonActions;
+  final double buttonsWidth;
+  final double? minSizeButtons;
 
   // Fixed parameters
   final double footerHeight = 50;
@@ -93,22 +103,15 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                           horizontal: widget.columnSpacing),
                       child: Text(
                         widget.headers[i].label,
+                        textAlign: widget.headerTextAlign,
                         style: widget.headerTextStyle ??
                             PaginatedTableConfig.headerTextStyle,
                       ),
                     ),
                   ),
                 if (widget.showButtons)
-                  Container(
-                    width: 150,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: CupertinoColors.systemGrey,
-                          width: 1,
-                        ),
-                      ),
-                    ),
+                  SizedBox(
+                    width: widget.buttonsWidth,
                     child: Center(
                       child: Text(
                         'Acciones',
@@ -163,7 +166,7 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                         ),
                         if (widget.showButtons)
                           SizedBox(
-                            width: 150,
+                            width: widget.buttonsWidth,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -175,6 +178,7 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                                           }
                                         : null,
                                     padding: EdgeInsets.zero,
+                                    minSize: widget.minSizeButtons,
                                     child: const Icon(
                                       CupertinoIcons.pencil,
                                       color: CupertinoColors.activeBlue,
@@ -188,6 +192,7 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                                           }
                                         : null,
                                     padding: EdgeInsets.zero,
+                                    minSize: widget.minSizeButtons,
                                     child: const Icon(
                                       CupertinoIcons.trash,
                                       color: CupertinoColors.destructiveRed,
@@ -201,10 +206,23 @@ class _PaginatedTableState<T> extends State<PaginatedTable<T>> {
                                           }
                                         : null,
                                     padding: EdgeInsets.zero,
+                                    minSize: widget.minSizeButtons,
                                     child: const Icon(
                                       CupertinoIcons.info,
                                       color: CupertinoColors.activeGreen,
                                     ),
+                                  ),
+                                for (int j = 0;
+                                    j < widget.customButtons.length;
+                                    j++)
+                                  CupertinoButton(
+                                    onPressed: () {
+                                      widget.customButtonActions[j](
+                                          widget.data[i]);
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    minSize: widget.minSizeButtons,
+                                    child: widget.customButtons[j],
                                   ),
                               ],
                             ),

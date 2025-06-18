@@ -12,7 +12,7 @@ class ChartsExample extends StatelessWidget {
         height: MediaQuery.of(context).size.width * 0.4,
         child: DonutChart(
           showIndicators: true,
-          vertical: false,
+          vertical: true,
           data: [
             DonutChartElement(
               'Elemento 1',
@@ -33,6 +33,11 @@ class ChartsExample extends StatelessWidget {
               'Elemento 4',
               10,
               Colors.yellow.withOpacity(0.2),
+            ),
+            DonutChartElement(
+              'Elemento 5',
+              5,
+              Colors.black,
             ),
           ],
         ),

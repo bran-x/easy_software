@@ -8,6 +8,7 @@ class ChartIndicator extends StatelessWidget {
     required this.color,
     required this.value,
     required this.label,
+    this.isInteger = true,
   });
 
   final double indicatorHeight;
@@ -15,6 +16,7 @@ class ChartIndicator extends StatelessWidget {
   final Color color;
   final double value;
   final String label;
+  final bool isInteger;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class ChartIndicator extends StatelessWidget {
                 SizedBox(
                   height: indicatorHeight / 2,
                   child: Text(
-                    value.toString(),
+                    value.toStringAsFixed(isInteger ? 0 : 1),
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       fontSize: 16,

@@ -1,5 +1,4 @@
 import 'package:easy_software/map/models.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -12,6 +11,11 @@ class TiledMap extends StatefulWidget {
     this.markers,
     this.polylines,
     this.provider = TiledMapProvider.google,
+    this.onTap,
+    this.controller,
+    this.center,
+    this.zoom,
+    this.maxZoom = 21.0,
   });
 
   final List<GeoFence>? geoFences;
@@ -19,6 +23,12 @@ class TiledMap extends StatefulWidget {
   final List<GeoMarker>? markers;
   final List<GeoPolyLine>? polylines;
   final TiledMapProvider provider;
+  final MapController? controller;
+  final LatLng? center;
+  final double? zoom;
+  final double maxZoom;
+
+  final void Function(TapPosition position, LatLng latlng)? onTap;
   @override
   State<TiledMap> createState() => _TiledMapState();
 }
@@ -27,15 +37,25 @@ class _TiledMapState extends State<TiledMap> {
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
+      mapController: widget.controller,
       options: MapOptions(
-        center: const LatLng(-12.046374, -77.042793),
-        zoom: 13.0,
+        initialCenter: widget.center ?? const LatLng(50.5, 30.51),
+        initialZoom: widget.zoom ?? 13.0,
+        maxZoom: widget.maxZoom,
+        onTap: widget.onTap,
       ),
       children: [
         TileLayer(
           urlTemplate: urlTemplate,
           userAgentPackageName: 'com.example.easy_software',
+          maxZoom: widget.maxZoom,
         ),
+        if (widget.provider == TiledMapProvider.arcgisSatellital)
+          TileLayer(
+            urlTemplate: urlNamesLayer,
+            userAgentPackageName: 'com.example.easy_software',
+            maxZoom: widget.maxZoom,
+          ),
         if (widget.geoFences != null)
           CircleLayer(
             circles: [
@@ -60,26 +80,14 @@ class _TiledMapState extends State<TiledMap> {
                   color: polygon.color.withOpacity(0.5),
                   borderColor: polygon.borderColor,
                   borderStrokeWidth: 2,
-                  isFilled: true,
-                  isDotted: polygon.isDotted,
-                ),
-            ],
-          ),
-        if (widget.markers != null)
-          MarkerLayer(
-            markers: [
-              for (var marker in widget.markers!)
-                Marker(
-                  point: marker.point,
-                  builder: marker.builder,
-                  width: marker.width,
-                  height: marker.height,
+                  pattern: polygon.isDotted
+                      ? const StrokePattern.dotted()
+                      : const StrokePattern.solid(),
                 ),
             ],
           ),
         if (widget.polylines != null)
           PolylineLayer(
-            polylineCulling: true,
             polylines: [
               for (var polyline in widget.polylines!)
                 Polyline(
@@ -89,8 +97,33 @@ class _TiledMapState extends State<TiledMap> {
                 ),
             ],
           ),
+        if (widget.markers != null)
+          MarkerLayer(
+            markers: [
+              for (var marker in widget.markers!)
+                Marker(
+                  point: marker.point,
+                  child: marker.builder(context),
+                  width: marker.width,
+                  height: marker.height,
+                ),
+            ],
+          ),
       ],
     );
+  }
+
+  String get urlNamesLayer {
+    switch (widget.provider) {
+      case TiledMapProvider.google:
+        return '';
+      case TiledMapProvider.openStreetMap:
+        return '';
+      case TiledMapProvider.arcgisSatellital:
+        return 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
+      default:
+        return '';
+    }
   }
 
   String get urlTemplate {
@@ -99,6 +132,8 @@ class _TiledMapState extends State<TiledMap> {
         return 'https://www.google.com/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
       case TiledMapProvider.openStreetMap:
         return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+      case TiledMapProvider.arcgisSatellital:
+        return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
       default:
         return 'https://www.google.com/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
     }
@@ -108,4 +143,5 @@ class _TiledMapState extends State<TiledMap> {
 enum TiledMapProvider {
   google,
   openStreetMap,
+  arcgisSatellital,
 }
