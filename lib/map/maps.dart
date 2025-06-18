@@ -62,7 +62,7 @@ class _TiledMapState extends State<TiledMap> {
               for (var fence in widget.geoFences!)
                 CircleMarker(
                   point: LatLng(fence.latitude, fence.longitude),
-                  color: fence.color.withOpacity(0.5),
+                  color: fence.color.withValues(alpha: 0.5),
                   borderColor: fence.color,
                   borderStrokeWidth: 2,
                   radius: fence.radius,
@@ -77,7 +77,7 @@ class _TiledMapState extends State<TiledMap> {
               for (var polygon in widget.geoPolygons!)
                 Polygon(
                   points: polygon.points,
-                  color: polygon.color.withOpacity(0.5),
+                  color: polygon.color.withValues(alpha: 0.5),
                   borderColor: polygon.borderColor,
                   borderStrokeWidth: 2,
                   pattern: polygon.isDotted
@@ -121,8 +121,6 @@ class _TiledMapState extends State<TiledMap> {
         return '';
       case TiledMapProvider.arcgisSatellital:
         return 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}';
-      default:
-        return '';
     }
   }
 
@@ -134,8 +132,6 @@ class _TiledMapState extends State<TiledMap> {
         return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
       case TiledMapProvider.arcgisSatellital:
         return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      default:
-        return 'https://www.google.com/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
     }
   }
 }
